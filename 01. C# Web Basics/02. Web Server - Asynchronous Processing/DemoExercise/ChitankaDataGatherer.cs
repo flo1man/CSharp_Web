@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -12,20 +13,13 @@ namespace DemoExercise
 {
     public class ChitankaDataGatherer
     {
-        private List<RawProperty> rawProperties;
+        private object lockOj = new();
 
-        public ChitankaDataGatherer()
+        // Gather data with Angle Sharp
+        public async Task<List<RawProperty>> GatherDataAngleSharp(int maxId)
         {
-            rawProperties = new List<RawProperty>();
-        }
+            var properties = new List<RawProperty>();
 
-        public List<RawProperty> GetRawProperties()
-        {
-            return rawProperties;
-        }
-
-        public async void GatherDataWithAngleSharp(int maxId)
-        {
             var parser = new HtmlParser();
             var config = Configuration.Default;
             var context = BrowsingContext.New(config);
@@ -40,7 +34,7 @@ namespace DemoExercise
                 var element = document.All
                     .Where(x => x.LocalName == "title")
                     .FirstOrDefault();
-                
+
 
                 var result = element.TextContent.Replace("\n", String.Empty)
                         .Replace("\r", String.Empty)
@@ -74,8 +68,68 @@ namespace DemoExercise
                         title = result.Substring(lastDash + 2).Trim();
                     }
                 }
-                rawProperties.Add(new RawProperty(author, title));
+                properties.Add(new RawProperty(author, title));
             }
+
+            return properties;
+        }
+
+        // Gethering data with Parallel loop
+        public ConcurrentBag<RawProperty> GatherDataParallel(int maxId)
+        {
+            //var properties = new List<RawProperty>();
+            ConcurrentBag<RawProperty> properties = new ConcurrentBag<RawProperty>();
+
+            string regex = @"[А-Яа-я]\—";
+
+            Parallel.For(1, maxId, i =>
+            {
+                var html = GetHtml(i).Result;
+
+                // Indexes of start / end
+                var start = html.IndexOf("<title>");
+                var end = html.IndexOf("— Моята библиотека");
+
+                var result = html
+                    .Substring(start + 7, end - start - 8)
+                    .Replace("\n", "")
+                    .Replace("\r", "")
+                    .Replace("\t", "");
+
+                string author = String.Empty;
+                string title = String.Empty;
+
+                Match match = Regex.Match(result, regex);
+
+                if (match.Success)
+                {
+                    var regexValue = match.Value;
+                    var index = result.IndexOf(regexValue) + 2;
+                    author = result.Substring(0, index - 1).Trim();
+                    title = result.Substring(index).Trim();
+
+                }
+                else
+                {
+                    var lastDash = result.LastIndexOf(" — ");
+
+                    if (lastDash < 0)
+                    {
+                        author = result.Trim();
+                    }
+                    else
+                    {
+                        author = result.Substring(0, lastDash).Trim();
+                        title = result.Substring(lastDash + 2).Trim();
+                    }
+                }
+
+                properties.Add(new RawProperty(author, title));
+
+                Console.WriteLine(i);
+            });
+
+            return properties;
         }
 
         public List<RawProperty> GatherData(int maxId)
@@ -132,7 +186,15 @@ namespace DemoExercise
         }
         public static async Task<string> GetHtml(int index)
         {
-            HttpClient httpClient = new HttpClient();
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                };
+
+            HttpClient httpClient = new HttpClient(handler);
             var url = $"https://chitanka.info/book/{index}";
             var bookInfo = await httpClient.GetStringAsync(url);
             return bookInfo;
