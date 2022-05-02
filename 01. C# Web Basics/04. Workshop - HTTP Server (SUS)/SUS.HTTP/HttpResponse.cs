@@ -10,7 +10,11 @@ namespace SUS.HTTP
     {
         public HttpResponse(string contentTypem, byte[] body, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
-            
+            if (body == null)
+            {
+                body = new byte[0];
+            }
+
             this.StatusCode = statusCode;
             this.Body = body;
             this.Headers = new List<Header>
@@ -18,11 +22,14 @@ namespace SUS.HTTP
                 new Header("Content-Type", contentTypem),
                 new Header("Content-Length", body.Length.ToString())
             };
+            this.Cookies = new List<Cookie>();
         }
 
         public HttpStatusCode StatusCode { get; set; }
 
         public ICollection<Header> Headers { get; set; }
+
+        public ICollection<Cookie> Cookies { get; set; }
 
         public byte[] Body { get; set; }
 
@@ -35,6 +42,11 @@ namespace SUS.HTTP
             foreach (var header in Headers)
             {
                 sb.Append(header.ToString() + HttpConstants.NewLine);
+            }
+
+            foreach (var cookie in Cookies)
+            {
+                sb.Append("Set-Cookie: " + cookie.ToString() + HttpConstants.NewLine);
             }
 
             sb.Append(HttpConstants.NewLine);
