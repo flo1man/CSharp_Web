@@ -40,55 +40,60 @@ namespace SUS.HTTP
 
         private async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            using (var stream = tcpClient.GetStream())
+            try
             {
-                // TODO: research if there is faster structure
-                List<byte> data = new List<byte>();
-                int position = 0;
-                byte[] buffer = new byte[HttpConstants.BufferSize];
-                while (true)
+                using (var stream = tcpClient.GetStream())
                 {
-                    int count = 
-                        await stream.ReadAsync(buffer, position, buffer.Length);
-                    position += count;
+                    // TODO: research if there is faster structure
+                    List<byte> data = new List<byte>();
+                    int position = 0;
+                    byte[] buffer = new byte[HttpConstants.BufferSize];
+                    while (true)
+                    {
+                        int count =
+                            await stream.ReadAsync(buffer, position, buffer.Length);
+                        position += count;
 
-                    if (count < buffer.Length)
-                    {
-                        var partialBuffer = new byte[count];
-                        Array.Copy(buffer, partialBuffer, count);
-                        data.AddRange(partialBuffer);
-                        break;
+                        if (count < buffer.Length)
+                        {
+                            var partialBuffer = new byte[count];
+                            Array.Copy(buffer, partialBuffer, count);
+                            data.AddRange(partialBuffer);
+                            break;
+                        }
+                        else
+                        {
+                            data.AddRange(buffer);
+                        }
                     }
-                    else
-                    {
-                        data.AddRange(buffer);
-                    }
+
+                    // byte[] => string (text)
+                    var requestAsString = Encoding.UTF8.GetString(data.ToArray());
+
+                    var request = new HttpRequest(requestAsString);
+                    Console.WriteLine(request.Method + " " + request.Path + " "
+                        + request.Headers.Count + " headers");
+
+
+                    var responseHtml = "<h1>Welcome!</h1>" +
+                        request.Headers.FirstOrDefault(x => x.Name == "User-Agent")?.Value;
+                    var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
+
+                    var response = new HttpResponse("text/html", responseBodyBytes);
+                    response.Headers.Add(new Header("Server", "SUS Server 1.0"));
+
+                    var responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
+
+                    await stream.WriteAsync(responseHeaderBytes);
+                    await stream.WriteAsync(response.Body);
                 }
-                
-                // byte[] => string (text)
-                var requestAsString = Encoding.UTF8.GetString(data.ToArray());
 
-                var request = new HttpRequest(requestAsString);
-                Console.WriteLine(requestAsString);
-
-
-                var responseHtml = "<h1>Welcome!</h1>" +
-                    request.Headers.FirstOrDefault(x => x.Name == "User-Agent")?.Value;
-                var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
-
-                var responseHttp = "HTTP/1.1 200 OK" + HttpConstants.NewLine +
-                    "Server: SUS Server 1.0" + HttpConstants.NewLine +
-                    "Content-Type: text/html" + HttpConstants.NewLine +
-                    "Content-Length: " + responseBodyBytes.Length + HttpConstants.NewLine +
-                    HttpConstants.NewLine;
-
-                var responseHeaderBytes = Encoding.UTF8.GetBytes(responseHttp);
-
-                await stream.WriteAsync(responseHeaderBytes);
-                await stream.WriteAsync(responseBodyBytes);
+                tcpClient.Close();
             }
-
-            tcpClient.Close();
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

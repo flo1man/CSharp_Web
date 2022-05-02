@@ -47,6 +47,24 @@ namespace SUS.HTTP
                 }
             }
 
+            if (this.Headers.Any(x => x.Name == HttpConstants.RequestCookieHeader))
+            {
+                var cookiesAsString =
+                    this.Headers
+                    .FirstOrDefault(x => x.Name == HttpConstants.RequestCookieHeader)
+                    .Value;
+
+
+                var extractCookies =
+                    cookiesAsString.Split(new string[] { ": ", "; " }
+                    , StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var cookie in extractCookies)
+                {
+                    this.Cookies.Add(new Cookie(cookie));
+                }
+            }
+
             this.Body = sb.ToString();
         }
 
@@ -54,9 +72,9 @@ namespace SUS.HTTP
 
         public string Method { get; set; }
 
-        public List<Header> Headers { get; set; }
+        public ICollection<Header> Headers { get; set; }
 
-        public List<Cookie> Cookies { get; set; }
+        public ICollection<Cookie> Cookies { get; set; }
 
         public string Body { get; set; }
     }
