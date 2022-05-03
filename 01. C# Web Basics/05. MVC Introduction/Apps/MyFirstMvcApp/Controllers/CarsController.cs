@@ -12,12 +12,12 @@ namespace MyFirstMvcApp.Controllers
     {
         public HttpResponse All(HttpRequest request)
         {
-            return View("Views/Cars/All.html");
+            return View();
         }
 
         public HttpResponse Add(HttpRequest request)
         {
-            return View("Views/Cars/Add.html");
+            return View();
         }
     }
 }
