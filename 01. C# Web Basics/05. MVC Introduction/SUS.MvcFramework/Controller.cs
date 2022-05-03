@@ -13,6 +13,7 @@ namespace SUS.MvcFramework
 {
     public abstract class Controller
     {
+
         public HttpResponse View([CallerMemberName]string filePath = null)
         {
             var layout = System.IO.File.ReadAllText("Views/Shared/_Layout.html");
@@ -35,6 +36,13 @@ namespace SUS.MvcFramework
         {
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             var response = new HttpResponse(contentType, fileBytes);
+            return response;
+        }
+
+        public HttpResponse Redirect(string url)
+        {
+            var response = new HttpResponse(HttpStatusCode.FOUND);
+            response.Headers.Add(new Header("location", url));
             return response;
         }
     }
