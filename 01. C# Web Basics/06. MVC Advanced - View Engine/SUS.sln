@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SUS.HTTP", "SUS.HTTP\SUS.HTTP.csproj", "{2133F790-8057-4C17-9003-319F53FCCA71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SUS.HTTP", "SUS.HTTP\SUS.HTTP.csproj", "{2133F790-8057-4C17-9003-319F53FCCA71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SUS.MvcFramework", "SUS.MvcFramework\SUS.MvcFramework.csproj", "{87109451-D094-4907-AB2E-2FF60C1FE7E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SUS.MvcFramework", "SUS.MvcFramework\SUS.MvcFramework.csproj", "{87109451-D094-4907-AB2E-2FF60C1FE7E4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{7749ECAE-6DD2-4D80-A171-4D27494A5BD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFirstMvcApp", "Apps\MyFirstMvcApp\MyFirstMvcApp.csproj", "{39032E29-96ED-4AC0-98C3-247CA56C18DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyFirstMvcApp", "Apps\MyFirstMvcApp\MyFirstMvcApp.csproj", "{39032E29-96ED-4AC0-98C3-247CA56C18DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SUS.MvcFramework.Tests", "SUS.MvcFramework.Tests\SUS.MvcFramework.Tests.csproj", "{7020D69D-F824-4DC8-BBE0-0794AA14F70A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{39032E29-96ED-4AC0-98C3-247CA56C18DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39032E29-96ED-4AC0-98C3-247CA56C18DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39032E29-96ED-4AC0-98C3-247CA56C18DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7020D69D-F824-4DC8-BBE0-0794AA14F70A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7020D69D-F824-4DC8-BBE0-0794AA14F70A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7020D69D-F824-4DC8-BBE0-0794AA14F70A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7020D69D-F824-4DC8-BBE0-0794AA14F70A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
