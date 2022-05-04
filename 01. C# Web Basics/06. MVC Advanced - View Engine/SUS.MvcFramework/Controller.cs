@@ -1,4 +1,5 @@
 ﻿using SUS.HTTP;
+using SUS.MvcFramework.ViewEngine;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,11 +14,19 @@ namespace SUS.MvcFramework
 {
     public abstract class Controller
     {
+        private SusViewEngine viewEngine;
 
-        public HttpResponse View([CallerMemberName]string filePath = null)
+        public Controller()
+        {
+            this.viewEngine = new SusViewEngine();
+        }
+
+
+        public HttpResponse View(object viewModel = null, [CallerMemberName]string filePath = null)
         {
             var layout = System.IO.File.ReadAllText("Views/Shared/_Layout.html");
-
+            layout = layout.Replace("@RenderBody()", "___VIEW_GOES_HERE___");
+            layout = this.viewEngine.GetHtml(layout, viewModel);
 
             var viewContent = System.IO.File.ReadAllText("Views/"
                 + this.GetType().Name.Replace("Controller", "")
@@ -25,7 +34,9 @@ namespace SUS.MvcFramework
                 + filePath
                 + ".html");
 
-            var responseHtml = layout.Replace("@RenderBody()", viewContent);
+            viewContent = this.viewEngine.GetHtml(viewContent, viewModel);
+
+            var responseHtml = layout.Replace("___VIEW_GOES_HERE___", viewContent);
 
             var responseBodyBytes = Encoding.UTF8.GetBytes(responseHtml);
             var response = new HttpResponse("text/html", responseBodyBytes);

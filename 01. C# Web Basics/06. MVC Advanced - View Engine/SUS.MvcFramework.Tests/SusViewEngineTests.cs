@@ -1,11 +1,12 @@
 using SUS.MvcFramework.ViewEngine;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
 namespace SUS.MvcFramework.Tests
 {
-    public class SusViewEngineTests
+    public partial class SusViewEngineTests
     {
         [Theory]
         // happy path
@@ -22,7 +23,7 @@ namespace SUS.MvcFramework.Tests
             {
                 DateOfBirth = new DateTime(2019, 6, 1),
                 Name = "Doggo",
-                Rrice = 1234.24M,
+                Price = 1234.24M,
             };
 
             IViewEngine viewEngine = new SusViewEngine();
@@ -34,13 +35,21 @@ namespace SUS.MvcFramework.Tests
             Assert.Equal(expectedResult, result);
         }
 
-        public class TestViewModel
+        [Fact]
+        public void TestTemplateViewModel()
         {
-            public string Name { get; set; }
+            IViewEngine engine = new SusViewEngine();
+            var result = engine.GetHtml(@"@foreach(var num in Model)
+{
+<span>@num</span>
+}", new List<int> { 1, 2, 3 });
 
-            public decimal Rrice { get; set; }
+            var expectedResult = @"<span>1</span>
+<span>2</span>
+<span>3</span>
+";
 
-            public DateTime DateOfBirth { get; set; }
+            Assert.Equal(expectedResult, result);
         }
     }
 }
