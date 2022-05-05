@@ -13,6 +13,7 @@ namespace SUS.HTTP
         {
             this.Headers = new List<Header>();
             this.Cookies = new List<Cookie>();
+            this.FormData = new Dictionary<string, string>();
 
             var lines = requestString
                 .Split(new string[] { HttpConstants.NewLine }
@@ -67,6 +68,17 @@ namespace SUS.HTTP
             }
 
             this.Body = sb.ToString();
+            var parameters = this.Body.Split("&");
+            foreach (var param in parameters)
+            {
+                var parameterParts = param.Split("=");
+                var name = parameterParts[0];
+                var value = parameterParts[1];
+                if (!this.FormData.ContainsKey(name))
+                {
+                    this.FormData.Add(name, value);
+                }
+            }
         }
 
         public string Path { get; set; }
@@ -76,6 +88,8 @@ namespace SUS.HTTP
         public ICollection<Header> Headers { get; set; }
 
         public ICollection<Cookie> Cookies { get; set; }
+
+        public IDictionary<string, string> FormData { get; set; }
 
         public string Body { get; set; }
     }
