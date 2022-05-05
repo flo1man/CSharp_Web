@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace SUS.HTTP
 
             var headerLine = lines[0];
             var headerLinesParts = headerLine.Split();
-            this.Method = headerLinesParts[0];
+            this.Method = (HttpMethod)Enum.Parse(typeof(HttpMethod), headerLinesParts[0], true);
             this.Path = headerLinesParts[1];
 
             int lineIndex = 1;
@@ -70,7 +71,7 @@ namespace SUS.HTTP
 
         public string Path { get; set; }
 
-        public string Method { get; set; }
+        public HttpMethod Method { get; set; }
 
         public ICollection<Header> Headers { get; set; }
 

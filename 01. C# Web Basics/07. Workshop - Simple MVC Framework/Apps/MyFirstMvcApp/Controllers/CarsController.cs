@@ -10,12 +10,12 @@ namespace MyFirstMvcApp.Controllers
 {
     public class CarsController : Controller
     {
-        public HttpResponse All(HttpRequest request)
+        public HttpResponse All()
         {
             return View();
         }
 
-        public HttpResponse Add(HttpRequest request)
+        public HttpResponse Add()
         {
             return View();
         }
