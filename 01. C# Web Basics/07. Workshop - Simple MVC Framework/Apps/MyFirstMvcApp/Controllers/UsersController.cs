@@ -1,34 +1,30 @@
 ﻿using SUS.HTTP;
 using SUS.MvcFramework;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MyFirstMvcApp.Controllers
+namespace BattleCards.Controllers
 {
     public class UsersController : Controller
     {
+        // GET /users/login
         public HttpResponse Login()
         {
-            return View();
+            return this.View();
         }
 
+        // GET /users/register
         public HttpResponse Register()
         {
-            return View();
+            return this.View();
         }
 
+        [HttpPost]
         public HttpResponse DoLogin()
         {
             // TODO: read data
             // TODO: check user
             // TODO: log user
-            // TODO: home page
             return this.Redirect("/");
         }
-
     }
 }

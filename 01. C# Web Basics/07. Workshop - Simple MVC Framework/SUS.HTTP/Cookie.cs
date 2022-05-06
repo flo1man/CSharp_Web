@@ -8,11 +8,12 @@
             this.Value = value;
         }
 
-        public Cookie(string cookieInfo)
+        // _ga=GA1.2.198505690.1579630167
+        public Cookie(string cookieAsString)
         {
-            var cookie = cookieInfo.Split("=", 2);
-            this.Name = cookie[0];
-            this.Value = cookie[1];
+            var cookieParts = cookieAsString.Split(new char[] { '=' }, 2);
+            this.Name = cookieParts[0];
+            this.Value = cookieParts[1];
         }
 
         public string Name { get; set; }
@@ -21,7 +22,7 @@
 
         public override string ToString()
         {
-            return $"{Name}={Value};";
+            return $"{this.Name}={this.Value}";
         }
     }
 }

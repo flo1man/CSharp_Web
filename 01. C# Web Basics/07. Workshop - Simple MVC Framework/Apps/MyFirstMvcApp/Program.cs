@@ -1,26 +1,14 @@
-﻿using MyFirstMvcApp.Controllers;
-using SUS.HTTP;
-using SUS.MvcFramework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using SUS.MvcFramework;
 using System.Threading.Tasks;
 
-namespace MyFirstMvcApp
+namespace BattleCards
 {
     public class Program
     {
         public static async Task Main(string[] args)
         {
-            List<Route> routeTable = new List<Route>();
-
-            
-            // TODO: <StartUp>
-            await Host.CreateHostAsync(new StartUp(), 80);
-
+            // TODO: <Startup>
+            await Host.CreateHostAsync(new Startup(), 80);
         }
     }
 }

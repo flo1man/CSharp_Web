@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -10,18 +11,17 @@ namespace SUS.HTTP
 {
     public class HttpServer : IHttpServer
     {
-
         List<Route> routeTable;
 
-        public HttpServer(List<Route> routes)
+        public HttpServer(List<Route> routeTable)
         {
-            this.routeTable = routes;
+            this.routeTable = routeTable;
         }
 
         public async Task StartAsync(int port)
         {
             TcpListener tcpListener =
-                new TcpListener(IPAddress.Loopback,port);
+                new TcpListener(IPAddress.Loopback, port);
             tcpListener.Start();
             while (true)
             {
@@ -45,6 +45,7 @@ namespace SUS.HTTP
                         int count =
                             await stream.ReadAsync(buffer, position, buffer.Length);
                         position += count;
+
                         if (count < buffer.Length)
                         {
                             var partialBuffer = new byte[count];
@@ -57,6 +58,7 @@ namespace SUS.HTTP
                             data.AddRange(buffer);
                         }
                     }
+
                     // byte[] => string (text)
                     var requestAsString = Encoding.UTF8.GetString(data.ToArray());
                     var request = new HttpRequest(requestAsString);
@@ -73,18 +75,27 @@ namespace SUS.HTTP
                     else
                     {
                         // Not Found 404
-                        response = new HttpResponse("text/html", new byte[0], HttpStatusCode.NOT_FOUND);
+                        response = new HttpResponse("text/html", new byte[0], HttpStatusCode.NotFound);
                     }
-                    response.Cookies.Add(new ResponseCookie("sid", Guid.NewGuid().ToString())
-                    { HttpOnly = true, MaxAge = 60 * 24 * 60 * 60 });
+
                     response.Headers.Add(new Header("Server", "SUS Server 1.0"));
+                    
+                    var sessionCookie = request.Cookies.FirstOrDefault(x => x.Name == HttpConstants.SessionCookieName);
+                    if (sessionCookie != null)
+                    {
+                        var responseSessionCookie = new ResponseCookie(sessionCookie.Name, sessionCookie.Value);
+                        responseSessionCookie.Path = "/";
+                        response.Cookies.Add(responseSessionCookie);
+                    }
+
                     var responseHeaderBytes = Encoding.UTF8.GetBytes(response.ToString());
                     await stream.WriteAsync(responseHeaderBytes, 0, responseHeaderBytes.Length);
                     await stream.WriteAsync(response.Body, 0, response.Body.Length);
                 }
+
                 tcpClient.Close();
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Console.WriteLine(ex);
             }

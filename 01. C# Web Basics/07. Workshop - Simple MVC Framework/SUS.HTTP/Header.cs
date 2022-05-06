@@ -12,10 +12,8 @@ namespace SUS.HTTP
 
         public Header(string headerLine)
         {
-            var headerParts = headerLine
-                .Split(new string[] { ": "}, 2
-                , StringSplitOptions.None);
-
+            var headerParts = headerLine.Split(new string[] { ": " },
+                2, StringSplitOptions.None);
             this.Name = headerParts[0];
             this.Value = headerParts[1];
         }
@@ -26,7 +24,7 @@ namespace SUS.HTTP
 
         public override string ToString()
         {
-            return $"{Name}: {Value}";
+            return $"{this.Name}: {this.Value}";
         }
     }
 }

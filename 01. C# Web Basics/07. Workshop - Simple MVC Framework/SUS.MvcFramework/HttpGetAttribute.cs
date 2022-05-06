@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+﻿using SUS.HTTP;
 
 namespace SUS.MvcFramework
 {
@@ -6,7 +6,6 @@ namespace SUS.MvcFramework
     {
         public HttpGetAttribute()
         {
-
         }
 
         public HttpGetAttribute(string url)

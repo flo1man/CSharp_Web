@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SUS.MvcFramework.ViewEngine
 {
@@ -21,13 +20,12 @@ namespace SUS.MvcFramework.ViewEngine
         {
             var html = new StringBuilder();
             html.AppendLine($"<h1>View compile {this.errors.Count()} errors:</h1><ul>");
-            foreach (var item in errors)
+            foreach (var error in this.errors)
             {
-                html.AppendLine($"<li>{item}</li>");
+                html.AppendLine($"<li>{error}</li>");
             }
 
             html.AppendLine($"</ul><pre>{csharpCode}</pre>");
-
             return html.ToString();
         }
     }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using SUS.HTTP;
+using System;
 
 namespace SUS.MvcFramework
 {
@@ -9,6 +7,6 @@ namespace SUS.MvcFramework
     {
         public string Url { get; set; }
 
-        public abstract HttpMethod Method { get;}
+        public abstract HttpMethod Method { get; }
     }
 }
