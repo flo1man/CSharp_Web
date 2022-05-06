@@ -1,6 +1,5 @@
 ﻿using BattleCards.Data;
 using BattleCards.ViewModels;
-using BattleCards.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using SUS.HTTP;
 using SUS.MvcFramework;
@@ -57,7 +56,7 @@ namespace BattleCards.Controllers
                 Type = x.Keyword,
             }).ToList();
 
-            return this.View(new AllCardsViewModel { Cards = cardsViewModel });
+            return this.View(cardsViewModel);
         }
 
         // /cards/collection
