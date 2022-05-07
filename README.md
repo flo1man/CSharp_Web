@@ -5,6 +5,7 @@
 - MVC Introduction
 - MVC Advanced - View Engine
 - MVC Advanced - IoC and Data Binding
+- Workshops
 
 
 <hr size="11" color="grey">	
