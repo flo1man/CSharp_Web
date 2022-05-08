@@ -8,11 +8,11 @@ namespace BattleCards.Controllers
 {
     public class UsersController : Controller
     {
-        private UsersService userService;
+        private readonly IUsersService usersService;
 
-        public UsersController()
+        public UsersController(IUsersService usersService)
         {
-            this.userService = new UsersService();
+            this.usersService = usersService;
         }
 
         // GET /users/login
@@ -27,16 +27,14 @@ namespace BattleCards.Controllers
         }
 
         [HttpPost("/Users/Login")]
-        public HttpResponse DoLogin()
+        public HttpResponse DoLogin(string username, string password)
         {
             if (this.IsUserSignedIn())
             {
                 return this.Redirect("/");
             }
 
-            var username = this.Request.FormData["username"];
-            var password = this.Request.FormData["password"];
-            var userId = this.userService.GetUserId(username, password);
+            var userId = this.usersService.GetUserId(username, password);
             if (userId == null)
             {
                 return this.Error("Invalid username or password");
@@ -58,17 +56,12 @@ namespace BattleCards.Controllers
         }
 
         [HttpPost("/Users/Register")]
-        public HttpResponse DoRegister()
+        public HttpResponse DoRegister(string username, string email, string password, string confirmPassword)
         {
             if (this.IsUserSignedIn())
             {
                 return this.Redirect("/");
             }
-
-            var username = this.Request.FormData["username"];
-            var email = this.Request.FormData["email"];
-            var password = this.Request.FormData["password"];
-            var confirmPassword = this.Request.FormData["confirmPassword"];
 
             if (username == null || username.Length < 5 || username.Length > 20)
             {
@@ -95,17 +88,17 @@ namespace BattleCards.Controllers
                 return this.Error("Passwords should be the same.");
             }
 
-            if (!this.userService.IsUsernameAvailable(username))
+            if (!this.usersService.IsUsernameAvailable(username))
             {
                 return this.Error("Username already taken.");
             }
 
-            if (!this.userService.IsEmailAvailable(email))
+            if (!this.usersService.IsEmailAvailable(email))
             {
                 return this.Error("Email already taken.");
             }
 
-            this.userService.CreateUser(username, email, password);
+            this.usersService.CreateUser(username, email, password);
             return this.Redirect("/Users/Login");
         }
 

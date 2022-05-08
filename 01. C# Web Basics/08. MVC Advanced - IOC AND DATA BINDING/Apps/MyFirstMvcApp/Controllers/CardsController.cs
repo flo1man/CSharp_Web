@@ -1,5 +1,5 @@
 ﻿using BattleCards.Data;
-using BattleCards.ViewModels;
+using BattleCards.ViewModels.Cards;
 using Microsoft.EntityFrameworkCore;
 using SUS.HTTP;
 using SUS.MvcFramework;
@@ -12,6 +12,13 @@ namespace BattleCards.Controllers
 {
     public class CardsController : Controller
     {
+        private readonly ApplicationDbContext db;
+
+        public CardsController(ApplicationDbContext db)
+        {
+            this.db = db;
+        }
+
         // GET /cards/add
         public HttpResponse Add()
         {
@@ -24,30 +31,28 @@ namespace BattleCards.Controllers
         }
 
         [HttpPost("/Cards/Add")]
-        public HttpResponse DoAdd()
+        public HttpResponse DoAdd(AddCardInputModel model)
         {
             if (!this.IsUserSignedIn())
             {
                 return this.Redirect("/Users/Login");
             }
 
-            var dbContext = new ApplicationDbContext();
-
             if (this.Request.FormData["name"].Length < 5)
             {
                 return this.Error("Name should be at least 5 characters long.");
             }
 
-            dbContext.Cards.Add(new Card
+            this.db.Cards.Add(new Card
             {
-                Attack = int.Parse(this.Request.FormData["attack"]),
-                Health = int.Parse(this.Request.FormData["health"]),
-                Description = this.Request.FormData["description"],
-                Name = this.Request.FormData["name"],
-                ImageUrl = this.Request.FormData["image"],
-                Keyword = this.Request.FormData["keyword"],
+                Attack = model.Attack,
+                Health = model.Health,
+                Description = model.Description,
+                Name = model.Name,
+                ImageUrl = model.Image,
+                Keyword = model.Keyword,
             });
-            dbContext.SaveChanges();
+            this.db.SaveChanges();
 
             return this.Redirect("/Cards/All");
         }
@@ -60,8 +65,7 @@ namespace BattleCards.Controllers
                 return this.Redirect("/Users/Login");
             }
 
-            var db = new ApplicationDbContext();
-            var cardsViewModel = db.Cards.Select(x => new CardViewModel
+            var cardsViewModel = this.db.Cards.Select(x => new CardViewModel
             {
                 Name = x.Name,
                 Description = x.Description,
