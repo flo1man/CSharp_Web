@@ -11,12 +11,10 @@ namespace Suls.Controllers
     public class ProblemsController : Controller
     {
         private readonly IProblemsService problemsService;
-        private readonly IUsersService usersService;
 
-        public ProblemsController(IProblemsService problemsService, IUsersService usersService)
+        public ProblemsController(IProblemsService problemsService)
         {
             this.problemsService = problemsService;
-            this.usersService = usersService;
         }
 
         public HttpResponse Create()

@@ -66,5 +66,15 @@ namespace Suls.Services
             
             return viewModel;
         }
+
+        public string GetNameById(string id)
+        {
+            var name = this.db.Problems
+                .Where(x => x.Id == id)
+                .Select(x => x.Name)
+                .FirstOrDefault();
+
+            return name;
+        }
     }
 }

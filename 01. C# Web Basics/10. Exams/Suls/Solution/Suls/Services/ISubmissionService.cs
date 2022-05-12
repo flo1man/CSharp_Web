@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Suls.ViewModels;
 
 namespace Suls.Services
 {
-    internal class ISubmissionService
+    public interface ISubmissionService
     {
+        public void CreateSubmission(string problemId, string userId, SubmissionInputModel model);
+
+        void DeleteSubmission(string submissionId);
     }
 }

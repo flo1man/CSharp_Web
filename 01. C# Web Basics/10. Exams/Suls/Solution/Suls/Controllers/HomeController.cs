@@ -26,6 +26,11 @@ namespace Suls.Controllers
 
         public HttpResponse IndexLoggedIn()
         {
+            if (!IsUserSignedIn())
+            {
+                return this.Redirect("/");
+            }
+
             var models = problemsService.GetAll();
 
             return View(models);

@@ -12,5 +12,7 @@ namespace Suls.Services
         IEnumerable<ProblemViewModel> GetAll();
 
         AllProblemDetailsViewModel GetAllDetails(string problemId);
+
+        string GetNameById(string id);
     }
 }
